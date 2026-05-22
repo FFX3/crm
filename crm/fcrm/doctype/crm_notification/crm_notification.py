@@ -53,6 +53,8 @@ def notify_user(notification):
 		reference_name=notification.redirect_to_docname,
 	)
 
-	if frappe.db.exists("CRM Notification", values):
+	# Exclude 'doctype' key from exists check as it's not a column
+	filter_values = {k: v for k, v in values.items() if k != "doctype"}
+	if frappe.db.exists("CRM Notification", filter_values):
 		return
 	frappe.get_doc(values).insert(ignore_permissions=True)
